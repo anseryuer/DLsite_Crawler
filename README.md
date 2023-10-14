@@ -25,11 +25,19 @@ The program can be used to extract various information from DLsite. Here's a qui
 
 Make sure to import the necessary functions before using them in your own scripts.
 
+Place the DLsite_Crawler.py file under your directory and then use `import DLsite_Crawler` to import the library
+
 ## Example
 
 I am currently using it to make a dataset includes all the selling data and tags of all the games with a higher sales number over 1000.
 
 So I will upload more program and data later.
+
+## Questions
+
+Free to ask!!!
+
+I am a Noob in python but I will try my best!
 
 ## License
 
