@@ -1,15 +1,18 @@
 import requests
 import re
 
-def get_web_text(product_id):
+def get_web_text(product_id) -> str:
     """
     Extract the text of the html website of the game with the input product id.
     https://www.dlsite.com/maniax/work/=/product_id/{product_id}.html
     """
-    return requests.get(f"https://www.dlsite.com/maniax/work/=/product_id/{product_id}.html").text
+    if product_id[0:2] == "VJ":
+        return requests.get(f"https://www.dlsite.com/maniax/work/=/product_id/{product_id}.html").text
+    else:
+        return requests.get(f"https://www.dlsite.com/pro/work/=/product_id/{product_id}.html").text
 
 
-def get_game_tags(web_txt):
+def get_game_tags(web_txt) -> list:
     """
     Extracts game tags from the given web page text.
 
@@ -25,18 +28,26 @@ def get_game_tags(web_txt):
     ['tag1', 'tag2']
     """
 
-    pattern = r'<a href="https://www\.dlsite\.com/maniax/fsr/=/genre/\d+/from/work\.genre">(.*?)</a>'
+    pattern = r'work\.genre">(.*?)</a>'
 
     results = re.findall(pattern, web_txt)
     return results
 
-def get_data_json(product_id):
+def get_data_json(product_id) -> dict:
     """
     Get the selling data json of the game with the given product id.
     """
-    return requests.get(f"https://www.dlsite.com/maniax/product/info/ajax?product_id={product_id}").json()
+    if product_id[0:2] == "VJ":
+        json = requests.get(f"https://www.dlsite.com/pro/product/info/ajax?product_id={product_id}").json()
+    else:# RJ123456 or RJ12345678
+        json = requests.get(f"https://www.dlsite.com/maniax/product/info/ajax?product_id={product_id}").json()
+    key = list(json.keys())[0]
+    new_json = json[key]
+    new_json['product_id'] = key
 
-def get_product_id(base_url:str, page_num = 1):
+    return new_json
+
+def get_product_id(base_url:str, page_num = 1) -> list:
     """
     This function extracts product IDs from a DLsite search pages.
     
@@ -59,9 +70,8 @@ def get_product_id(base_url:str, page_num = 1):
     processed_rsl = []
     for i in range(1,page_num+1):
         web_text = requests.get(create_url_from_page(base_url,i)).text
-        pattern = r'id="_RJ\d{6}"'
+        pattern = r' data-product_id="([^"]*)"'
         result.extend(re.findall(pattern, web_text))
     for lk in result:
-        processed_rsl.append(lk[5:-1])
-        #print(lk[5:-1])
+        processed_rsl.append(lk)
     return processed_rsl
