@@ -1,6 +1,6 @@
 # DLsite Crawler
 
-A Python program for scraping information from DLsite, a popular online store for downloadable content in Japan.
+A Python web crawler program for dlsite.com scraping information from DLsite, a popular online store for downloadable content in Japan.
 
 ## Overview
 
